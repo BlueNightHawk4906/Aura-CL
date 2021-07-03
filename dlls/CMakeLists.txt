@@ -14,6 +14,10 @@ add_sources(
 	CM249.h
 	CPipewrench.h
     CPenguin.h
+	CShockRifle.cpp
+	CShockRifle.h
+	CSporeLauncher.cpp
+	CSporeLauncher.h
 	CSniperRifle.h
 	cdll_dll.h
 	crossbow.cpp
