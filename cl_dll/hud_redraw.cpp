@@ -32,7 +32,6 @@ int grgLogoFrame[MAX_LOGO_FRAMES] =
 };
 
 
-
 float HUD_GetFOV( void );
 
 extern cvar_t *sensitivity;
@@ -161,7 +160,7 @@ int CHud :: Redraw( float flTime, int intermission )
 	// return 0;
 
 	UpdateDefaultHUDColor();
-	
+
 	// draw all registered HUD elements
 	if ( m_pCvarDraw->value )
 	{

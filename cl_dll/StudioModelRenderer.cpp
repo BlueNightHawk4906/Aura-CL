@@ -73,6 +73,8 @@ void CStudioModelRenderer::Init( void )
 	m_pCvarViewmodelFov		= gEngfuncs.pfnRegisterVariable( "cl_viewmodel_fov","0", FCVAR_ARCHIVE );
 	m_pCvarViewmodelNoIdle = gEngfuncs.pfnRegisterVariable("cl_viewmodel_disable_idle", "0", FCVAR_ARCHIVE);
 	m_pCvarViewmodelNoEquip = gEngfuncs.pfnRegisterVariable("cl_viewmodel_disable_equip", "0", FCVAR_ARCHIVE);
+	m_pCvarOriginInterpolation = gEngfuncs.pfnRegisterVariable("cl_origin_interpolation", "0", FCVAR_ARCHIVE);
+
 
 	m_pChromeSprite			= IEngineStudio.GetChromeSprite();
 
@@ -1248,6 +1250,26 @@ int CStudioModelRenderer::StudioDrawModel( int flags )
 	m_pStudioHeader = (studiohdr_t *)IEngineStudio.Mod_Extradata (m_pRenderModel);
 	IEngineStudio.StudioSetHeader( m_pStudioHeader );
 	IEngineStudio.SetRenderModel( m_pRenderModel );
+
+	// Try to smooth out entity movement
+	if (m_pCvarOriginInterpolation->value && (!m_pCurrentEntity->player && m_pCurrentEntity->index && m_pCurrentEntity != gEngfuncs.GetViewModel()))
+	{
+		if(Length(m_pCurrentEntity->curstate.origin - m_pCurrentEntity->baseline.vuser1) > 100)
+		{
+			m_pCurrentEntity->baseline.vuser1 = m_pCurrentEntity->curstate.origin;
+		}
+		else
+		{
+			gEngfuncs.Con_Printf("%i %s\n", m_pCurrentEntity->index, m_pCurrentEntity->model->name);
+			float frametime = m_clTime - m_clOldTime;
+			m_pCurrentEntity->baseline.vuser1[0] = lerp(m_pCurrentEntity->baseline.vuser1[0], m_pCurrentEntity->curstate.origin[0], frametime * 15.5f);
+			m_pCurrentEntity->baseline.vuser1[1] = lerp(m_pCurrentEntity->baseline.vuser1[1], m_pCurrentEntity->curstate.origin[1], frametime * 15.5f);
+			m_pCurrentEntity->baseline.vuser1[2] = lerp(m_pCurrentEntity->baseline.vuser1[2], m_pCurrentEntity->curstate.origin[2], frametime * 15.5f);
+			VectorCopy(m_pCurrentEntity->baseline.vuser1, m_pCurrentEntity->origin);
+		}
+	}
+
+
 
 	StudioSetUpTransform( 0 );
 

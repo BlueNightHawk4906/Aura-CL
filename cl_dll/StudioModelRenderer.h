@@ -136,6 +136,8 @@ public:
 	cvar_t* m_pCvarViewmodelNoIdle;
 	// Disable viewmodel draw/holster/deploy animations on viewmodels
 	cvar_t* m_pCvarViewmodelNoEquip;
+	// Origin interpolation
+	cvar_t* m_pCvarOriginInterpolation;
 	// The entity which we are currently rendering.
 	cl_entity_t		*m_pCurrentEntity;		
 
